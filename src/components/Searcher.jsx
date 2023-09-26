@@ -4,7 +4,7 @@ import { Input } from "antd";
 const Searcher = () => {
   return (
     <div>
-      <Input.Search placeholder="Buscar" />
+      <Input.Search placeholder="Buscar" style={{ marginBottom: "10px" }} />
     </div>
   );
 };
