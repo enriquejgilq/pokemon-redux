@@ -1,51 +1,40 @@
-import 'antd/dist/reset.css';
 import { useEffect } from 'react';
-import { Col, Spin } from 'antd'
+import { Col, Spin } from 'antd';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import Searcher from './components/Searcher';
 import PokemonList from './components/PokemonList';
-import logo from './statics/logo.svg'
+import logo from './statics/logo.svg';
+import { fetchPokemonsWithDetails } from './slices/dataSlice';
 import './App.css';
-import { getPokemons } from './api';
-import { getPokemonWithDetails, setLoaging } from './actions';
-import { useDispatch, useSelector } from 'react-redux';
-
-
-
 
 function App() {
-  const pokemons = useSelector(state => state.get('pokemons').toJS())
-  const loading = useSelector(state => state.get('loading'))
-  const dispatch = useDispatch()
+  const pokemons = useSelector((state) => state.data.pokemons, shallowEqual);
+
+  const loading = useSelector((state) => state.ui.loading);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    const fetchPokemons = async () => {
-      dispatch(setLoaging(true))
-      const pokemonRes = await getPokemons()
-      dispatch(getPokemonWithDetails(pokemonRes))
-      dispatch(setLoaging(false))
-
-    }
-    fetchPokemons()
-  }, [])
+    dispatch(fetchPokemonsWithDetails());
+  }, []);
 
   return (
-    <div className="App">
+    <div className='App'>
       <Col span={4} offset={10}>
-        <img src={logo} alt='Logo' />
+        <img src={logo} alt='Pokedux' />
       </Col>
       <Col span={8} offset={8}>
         <Searcher />
       </Col>
-      {
-        loading ?
-          <Col offset={12}>
-            <Spin spinning size='large' />
-          </Col> : (
-            <PokemonList pokemons={pokemons} />
-          )
-      }
+      {loading ? (
+        <Col offset={12}>
+          <Spin spinning size='large' />
+        </Col>
+      ) : (
+        <PokemonList pokemons={pokemons} />
+      )}
     </div>
   );
 }
 
-export default App
+export default App;
